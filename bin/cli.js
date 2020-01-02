@@ -6,12 +6,11 @@
 const program = require('commander');
 
 const packageJson = require('../package.json');
-const index = require('../src/index');
+const generate = require('../src/generate');
 
 program
-    .version(packageJson.version)
-    .option('-v, --version', packageJson.version)
-    .option('-c, --create', 'through quick-start-cli create A project', () => {
-        index()
-    })
-    .parse(process.argv);
+  .version(packageJson.version)
+  .option('-g, --generate <pathName>' ,'through quick-generate-cli create A component', (pathName) => {
+    generate(pathName);
+  })
+  .parse(process.argv);
