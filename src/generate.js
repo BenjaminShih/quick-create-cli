@@ -26,19 +26,26 @@ const camelize = (str) => {
 module.exports = function (pathName) {
   line();
   const componentName = pathName.substring(pathName.lastIndexOf('/') + 1);
+  if (!/^[a-zA-Z][_\w$]*$/.test(componentName)) {
+    log(chalk.red('组件名不合法，请参考变量命名规则！'));
+    return;
+  }
   log(chalk.green('正在创建' + componentName + '组件……'));
 
   const cssSuffix = cssSuffixMap[cssConfig.language];
   const filesDecorations = ['.component.html', '.component.ts', '.component.' + cssSuffix, '.service.ts'];
 
+  const filePath = path.join(process.cwd(), 'src/pages/' + pathName);
+  const folderPath = filePath.substring(0, filePath.lastIndexOf('/'));
+
+  mkdirp.sync(folderPath, (error) => {
+    if (error) {
+      log(chalk.red(error));
+    }
+  });
+
   filesDecorations.forEach((filesDecoration, index) => {
-    const filePath = path.join(process.cwd(), 'src/pages/' + pathName + filesDecoration);
-    const folderPath = filePath.substring(0, filePath.lastIndexOf('/'));
-    mkdirp(folderPath, (error) => {
-      if (error) {
-        log(chalk.red(error));
-      }
-    });
+    const file = path.join(process.cwd(), 'src/pages/' + pathName + filesDecoration);
     let fileContent = '';
     let className = '';
 
@@ -63,14 +70,14 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 
-export class ${className}} {
+export class ${className} {
   constructor(private http: HttpClient) {
   }
 }`
 
     }
 
-    fs.writeFile(filePath, fileContent, error => {
+    fs.writeFileSync(file, fileContent, error => {
       if (error) {
         log(chalk.red(error));
       }
