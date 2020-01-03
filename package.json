@@ -2,7 +2,7 @@
   "name": "quick-generate-cli",
   "version": "0.0.1-Beta.0",
   "description": "",
-  "main": "./src/index.js",
+  "main": "./src/generate.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

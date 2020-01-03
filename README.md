@@ -23,6 +23,10 @@ qg -v
 qg -g path/component-name
 ```
 
+## 说明:
+1. 文件夹与组件同名，默认创建在`$/src/pages`文件目录下, 可以在前面增加路径名来到达目标目录， 如 `qg -g no/exist/path/component-name`。
+2. 默认读取 `$/config/css-config.json`中的language字段来定义css文件后缀,如果项目采用quick-start-cli脚手架建立，那么自动会生成该配置文件。
+
 
 
 
