@@ -26,7 +26,7 @@ const camelize = (str) => {
 module.exports = function (pathName) {
   line();
   const componentName = pathName.substring(pathName.lastIndexOf('/') + 1);
-  if (!/^[a-zA-Z][_\w$]*$/.test(componentName)) {
+  if (!/^[a-zA-Z_][-_\w$]*$/.test(componentName)) {
     log(chalk.red('组件名不合法，请参考变量命名规则！'));
     return;
   }
@@ -35,8 +35,7 @@ module.exports = function (pathName) {
   const cssSuffix = cssSuffixMap[cssConfig.language];
   const filesDecorations = ['.component.html', '.component.ts', '.component.' + cssSuffix, '.service.ts'];
 
-  const filePath = path.join(process.cwd(), 'src/pages/' + pathName);
-  const folderPath = filePath.substring(0, filePath.lastIndexOf('/'));
+  const folderPath = path.join(process.cwd(), 'src/pages/' + pathName + '/');
 
   mkdirp.sync(folderPath, (error) => {
     if (error) {
@@ -45,7 +44,7 @@ module.exports = function (pathName) {
   });
 
   filesDecorations.forEach((filesDecoration, index) => {
-    const file = path.join(process.cwd(), 'src/pages/' + pathName + filesDecoration);
+    const file = path.join(process.cwd(), 'src/pages/' + pathName + '/' + componentName + filesDecoration);
     let fileContent = '';
     let className = '';
 
@@ -77,11 +76,12 @@ export class ${className} {
 
     }
 
+    log(chalk.green(file + '创建完成！'));
+
     fs.writeFileSync(file, fileContent, error => {
       if (error) {
         log(chalk.red(error));
       }
     });
   });
-  log(chalk.green(componentName + '组件创建创建完成！'));
 };
