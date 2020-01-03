@@ -1,8 +1,9 @@
-const copy = require('directory-copy');
 const path = require('path');
 const chalk = require('chalk');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
+const inquirer = require('inquirer');
+
 
 const line = require('./line');
 const log = require('./logger');
@@ -43,28 +44,32 @@ module.exports = function (pathName) {
     }
   });
 
-  filesDecorations.forEach((filesDecoration, index) => {
+  const genetate = function () {
+    const filesDecoration = filesDecorations.shift();
     const file = path.join(process.cwd(), 'src/pages/' + pathName + '/' + componentName + filesDecoration);
+
     let fileContent = '';
     let className = '';
 
-
-    if (filesDecoration === '.component.ts') {
-      className = camelize(componentName) + 'Component';
-      fileContent =
-        `import { Component } from '@angular/core';
+    fs.access(file, fs.constants.F_OK, (err) => {
+      const create = () => {
+        if (filesDecoration === '.component.ts') {
+          className = camelize(componentName) + 'Component';
+          fileContent =
+            `import { Component } from '@angular/core';
       
 @Component({
   templateUrl: './${componentName}.component.html',
-  styleUrls: ['./${componentName}${filesDecorations[2]}']
+  styleUrls: ['./${componentName}.component.${cssSuffix}']
 })
 export class ${className} {
 }`;
-    }
-    if (filesDecoration === '.service.ts') {
-      className = camelize(componentName) + 'Service';
-      fileContent =
-        `import { Injectable } from '@angular/core';
+        }
+
+        if (filesDecoration === '.service.ts') {
+          className = camelize(componentName) + 'Service';
+          fileContent =
+            `import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
@@ -74,14 +79,41 @@ export class ${className} {
   }
 }`
 
-    }
+        }
 
-    log(chalk.green(file + '创建完成！'));
+        fs.writeFileSync(file, fileContent, error => {
+          if (error) {
+            log(chalk.red(error));
 
-    fs.writeFileSync(file, fileContent, error => {
-      if (error) {
-        log(chalk.red(error));
+          }
+        });
+
+        log(chalk.green(file + ' 文件创建完成！'));
+      };
+
+      if (err) {
+        create();
+        if (filesDecorations.length) {
+          genetate();
+        }
+      } else {
+        inquirer.prompt([{
+          name: 'confirm',
+          type: 'confirm',
+          message: file + ' 文件已经存在，是否覆盖？',
+        }]).then((result) => {
+          if (result.confirm) {
+            create();
+          } else {
+            log(chalk.red(file + ' 文件创建已取消'));
+          }
+          if (filesDecorations.length) {
+            genetate();
+          }
+        });
       }
     });
-  });
+  };
+
+  genetate();
 };
