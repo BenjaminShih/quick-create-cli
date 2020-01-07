@@ -23,6 +23,10 @@ const camelize = (str) => {
   return camel.charAt(0).toUpperCase() + camel.slice(1);
 };
 
+const lowercaseFirstLetter = (str) => {
+  return str.charAt(0).toLowerCase() + str.slice(1);
+};
+
 
 module.exports = function (pathName) {
   line();
@@ -55,14 +59,22 @@ module.exports = function (pathName) {
       const create = () => {
         if (filesDecoration === '.component.ts') {
           className = camelize(componentName) + 'Component';
+          const serviceName = camelize(componentName) + 'Service';
           fileContent =
             `import { Component } from '@angular/core';
-      
+import { ${serviceName} } from './${componentName}.service';
+
 @Component({
   templateUrl: './${componentName}.component.html',
-  styleUrls: ['./${componentName}.component.${cssSuffix}']
+  styleUrls: ['./${componentName}.component.${cssSuffix}'],
+  providers: [
+    ${serviceName}
+  ]
 })
+
 export class ${className} {
+  constructor(private ${lowercaseFirstLetter(serviceName)}: ${serviceName}) {
+  }
 }`;
         }
 
@@ -73,7 +85,6 @@ export class ${className} {
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
-
 export class ${className} {
   constructor(private http: HttpClient) {
   }
