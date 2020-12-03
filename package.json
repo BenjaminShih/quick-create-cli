@@ -1,6 +1,6 @@
 {
-  "name": "quick-generate-cli",
-  "version": "0.0.1-Beta.3",
+  "name": "ng-component-generator-cli",
+  "version": "1.0.1",
   "description": "",
   "main": "./src/generate.js",
   "scripts": {
