@@ -46,7 +46,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "commit-msg",
+      "pre-commit": "commitlint -E HUSKY_GIT_PARAMS",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
     }
   }
