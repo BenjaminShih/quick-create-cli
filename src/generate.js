@@ -17,7 +17,7 @@ const cssSuffixMap = {
   less: 'less',
 };
 
-// 中划线命名转化成大驼峰
+// 中划线命名转化成大驼峰 2
 const camelize = (str) => {
   const camel = (str + "").replace(/-\D/g,
     (match) => {
