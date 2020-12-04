@@ -1,7 +1,8 @@
 const log = require('./logger');
 
 let line = [];
-for (let i = 0; i < 80; i++) {
+const NUM = 80;
+for (let num = 0; num < NUM; num++) {
   line.push('=');
 }
 line = line.join('');

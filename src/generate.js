@@ -12,9 +12,9 @@ const log = require('./logger');
 const cssConfig = require(path.join(process.cwd(), 'config/css-config.json'));
 
 const cssSuffixMap = {
+  less: 'less',
   sass: 'scss',
   stylus: 'styl',
-  less: 'less',
 };
 
 // 中划线命名转化成大驼峰 2
@@ -124,9 +124,9 @@ export class ${className} {
         inquirer
           .prompt([
             {
+              message: file + ' 文件已经存在，是否覆盖？',
               name: 'confirm',
               type: 'confirm',
-              message: file + ' 文件已经存在，是否覆盖？',
             },
           ])
           .then(result => {
