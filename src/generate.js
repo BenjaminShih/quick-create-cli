@@ -18,19 +18,17 @@ const cssSuffixMap = {
 };
 
 // 中划线命名转化成大驼峰 2
-const camelize = (str) => {
-  const camel = (str + "").replace(/-\D/g,
-    (match) => {
-      return match.charAt(1).toUpperCase();
-    });
+const camelize = str => {
+  const camel = (str + '').replace(/-\D/g, match => {
+    return match.charAt(1).toUpperCase();
+  });
   return camel.charAt(0).toUpperCase() + camel.slice(1);
 };
 
 // 将首字母小写
-const lowercaseFirstLetter = (str) => {
+const lowercaseFirstLetter = str => {
   return str.charAt(0).toLowerCase() + str.slice(1);
 };
-
 
 module.exports = function (pathName) {
   line();
@@ -45,11 +43,16 @@ module.exports = function (pathName) {
   // css预编译器选择
   const cssSuffix = cssSuffixMap[cssConfig.language];
   // 需要构建的文件后缀
-  const filesDecorations = ['.component.html', '.component.ts', '.component.' + cssSuffix, '.service.ts'];
+  const filesDecorations = [
+    '.component.html',
+    '.component.ts',
+    '.component.' + cssSuffix,
+    '.service.ts',
+  ];
 
   // 新建文件夹位置，暂定为根目录
   const folderPath = path.join(process.cwd(), pathName + '/');
-  mkdirp.sync(folderPath, (error) => {
+  mkdirp.sync(folderPath, error => {
     if (error) {
       log(chalk.red(error));
     }
@@ -65,14 +68,13 @@ module.exports = function (pathName) {
     let className = '';
 
     // 测试文件是否存在
-    fs.access(file, fs.constants.F_OK, (err) => {
+    fs.access(file, fs.constants.F_OK, err => {
       // 文件构建函数
       const create = () => {
         if (filesDecoration === '.component.ts') {
           className = camelize(componentName) + 'Component';
           const serviceName = camelize(componentName) + 'Service';
-          fileContent =
-            `import { Component } from '@angular/core';
+          fileContent = `import { Component } from '@angular/core';
             
 import { ${serviceName} } from './${componentName}.service';
 
@@ -92,22 +94,19 @@ export class ${className} {
 
         if (filesDecoration === '.service.ts') {
           className = camelize(componentName) + 'Service';
-          fileContent =
-            `import { Injectable } from '@angular/core';
+          fileContent = `import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ${className} {
   constructor(private http: HttpClient) {
   }
-}`
-
+}`;
         }
 
         fs.writeFileSync(file, fileContent, error => {
           if (error) {
             log(chalk.red(error));
-
           }
         });
 
@@ -122,20 +121,24 @@ export class ${className} {
         }
       } else {
         // 若文件存在则询问是否覆盖
-        inquirer.prompt([{
-          name: 'confirm',
-          type: 'confirm',
-          message: file + ' 文件已经存在，是否覆盖？',
-        }]).then((result) => {
-          if (result.confirm) {
-            create();
-          } else {
-            log(chalk.red(file + ' 文件创建已取消'));
-          }
-          if (filesDecorations.length) {
-            genetate();
-          }
-        });
+        inquirer
+          .prompt([
+            {
+              name: 'confirm',
+              type: 'confirm',
+              message: file + ' 文件已经存在，是否覆盖？',
+            },
+          ])
+          .then(result => {
+            if (result.confirm) {
+              create();
+            } else {
+              log(chalk.red(file + ' 文件创建已取消'));
+            }
+            if (filesDecorations.length) {
+              genetate();
+            }
+          });
       }
     });
   };
