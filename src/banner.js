@@ -7,7 +7,7 @@ module.exports = function banner() {
     chalk.green(
       figlet.textSync('QG---Shi Junnan', {
         horizontalLayout: 'full',
-      }),
-    ),
+      })
+    )
   );
 };

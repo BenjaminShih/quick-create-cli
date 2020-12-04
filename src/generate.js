@@ -18,15 +18,15 @@ const cssSuffixMap = {
 };
 
 // 中划线命名转化成大驼峰 2
-const camelize = str => {
-  const camel = (str + '').replace(/-\D/g, match => {
+const camelize = (str) => {
+  const camel = (str + '').replace(/-\D/g, (match) => {
     return match.charAt(1).toUpperCase();
   });
   return camel.charAt(0).toUpperCase() + camel.slice(1);
 };
 
 // 将首字母小写
-const lowercaseFirstLetter = str => {
+const lowercaseFirstLetter = (str) => {
   return str.charAt(0).toLowerCase() + str.slice(1);
 };
 
@@ -52,7 +52,7 @@ module.exports = function (pathName) {
 
   // 新建文件夹位置，暂定为根目录
   const folderPath = path.join(process.cwd(), pathName + '/');
-  mkdirp.sync(folderPath, error => {
+  mkdirp.sync(folderPath, (error) => {
     if (error) {
       log(chalk.red(error));
     }
@@ -68,7 +68,7 @@ module.exports = function (pathName) {
     let className = '';
 
     // 测试文件是否存在
-    fs.access(file, fs.constants.F_OK, err => {
+    fs.access(file, fs.constants.F_OK, (err) => {
       // 文件构建函数
       const create = () => {
         if (filesDecoration === '.component.ts') {
@@ -104,7 +104,7 @@ export class ${className} {
 }`;
         }
 
-        fs.writeFileSync(file, fileContent, error => {
+        fs.writeFileSync(file, fileContent, (error) => {
           if (error) {
             log(chalk.red(error));
           }
@@ -129,7 +129,7 @@ export class ${className} {
               type: 'confirm',
             },
           ])
-          .then(result => {
+          .then((result) => {
             if (result.confirm) {
               create();
             } else {
